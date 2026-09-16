@@ -1,0 +1,37 @@
+{
+  "name": "cyc-afterhours",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/show-ip.js && next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "db:migrate:local": "wrangler d1 execute cyc-afterhours --local --file=schema/climbs.sql",
+    "db:migrate": "wrangler d1 execute cyc-afterhours --remote --file=schema/climbs.sql"
+  },
+  "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.6",
+    "aws4fetch": "^1.0.20",
+    "next": "^16.3.5",
+    "next-themes": "^0.4.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^22.20.3",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9",
+    "eslint-config-next": "^16.3.5",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5",
+    "wrangler": "^4.125.0"
+  }
+}

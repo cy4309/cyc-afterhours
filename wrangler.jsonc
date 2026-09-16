@@ -1,0 +1,38 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "cyc-afterhours",
+	"main": ".open-next/worker.js",
+	"workers_dev": true,
+	"preview_urls": false,
+	"compatibility_date": "2025-09-23",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "cyc-afterhours"
+		}
+	],
+	"vars": {
+		"DATA_SOURCE": "cloudflare"
+	},
+	"d1_databases": [
+		{
+			"binding": "cyc_afterhours",
+			"database_name": "cyc-afterhours",
+			"database_id": "6435ac83-552e-498b-8a3d-47a51c7e76fc"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA_BUCKET",
+			"bucket_name": "cyc-afterhours"
+		}
+	]
+}

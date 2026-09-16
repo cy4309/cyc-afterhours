@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "allowed": {
+        "origins": [
+          "http://localhost:3000",
+          "http://127.0.0.1:3000",
+          "https://cyc-afterhours.cy4309.workers.dev"
+        ],
+        "methods": ["GET", "PUT", "HEAD"],
+        "headers": ["*"]
+      },
+      "exposeHeaders": ["ETag", "Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+}
