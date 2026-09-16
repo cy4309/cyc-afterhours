@@ -14,10 +14,10 @@ export function createD1ClimbsRepository(db: D1DatabaseLike): ClimbsRepository {
       const statement = useFilter
         ? db
             .prepare(
-              `SELECT ${SELECT_FIELDS} FROM climbs WHERE grade = ? ORDER BY date DESC, created_at DESC`,
+              `SELECT ${SELECT_FIELDS} FROM climbs WHERE grade = ? ORDER BY created_at DESC, date DESC`,
             )
             .bind(filter)
-        : db.prepare(`SELECT ${SELECT_FIELDS} FROM climbs ORDER BY date DESC, created_at DESC`);
+        : db.prepare(`SELECT ${SELECT_FIELDS} FROM climbs ORDER BY created_at DESC, date DESC`);
 
       const { results } = await statement.all<ClimbRow>();
       return results.map(rowToClimb);

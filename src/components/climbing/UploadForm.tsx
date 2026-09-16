@@ -16,6 +16,12 @@ function fileContentType(file: File): string {
   return "video/mp4";
 }
 
+function parseAttempts(value: string): number | undefined {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 1) return undefined;
+  return Math.round(parsed);
+}
+
 export function UploadForm() {
   const router = useRouter();
   const abortRef = useRef<AbortController | null>(null);
@@ -24,7 +30,7 @@ export function UploadForm() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [gym, setGym] = useState("");
   const [location, setLocation] = useState("");
-  const [attempts, setAttempts] = useState("1");
+  const [attempts, setAttempts] = useState("");
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +103,7 @@ export function UploadForm() {
         date,
         gym: gym.trim(),
         location: location.trim() || undefined,
-        attempts: Number(attempts) || undefined,
+        attempts: parseAttempts(attempts),
         videoKey: key,
         duration,
       });

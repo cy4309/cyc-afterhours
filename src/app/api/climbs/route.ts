@@ -41,8 +41,8 @@ function parseCreateClimbInput(body: Record<string, unknown>): CreateClimbInput 
   if (typeof body.location === "string" && body.location.trim()) {
     input.location = body.location.trim();
   }
-  if (typeof body.attempts === "number" && Number.isFinite(body.attempts)) {
-    input.attempts = Math.max(1, Math.round(body.attempts));
+  if (typeof body.attempts === "number" && Number.isFinite(body.attempts) && body.attempts >= 1) {
+    input.attempts = Math.round(body.attempts);
   }
   if (typeof body.posterKey === "string" && body.posterKey) {
     input.posterKey = body.posterKey;

@@ -7,18 +7,16 @@ type VideoCardProps = {
   climb: Climb;
   videoUrl: string;
   posterUrl?: string;
-  showMeta?: boolean;
 };
 
-export function VideoCard({ climb, videoUrl, posterUrl, showMeta = false }: VideoCardProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isVisibleRef = useRef(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [hasBeenVisible, setHasBeenVisible] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [mediaError, setMediaError] = useState(false);
+export function VideoCard({
+  climb,
+  videoUrl,
+  posterUrl,
+}: VideoCardProps) {
+  const rootRef = useRef<HTMLElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
 
   useEffect(() => {
     const node = rootRef.current;
@@ -26,40 +24,25 @@ export function VideoCard({ climb, videoUrl, posterUrl, showMeta = false }: Vide
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isVisibleRef.current = entry.isIntersecting;
-        setIsVisible(entry.isIntersecting);
         if (entry.isIntersecting) {
-          setHasBeenVisible(true);
+          setShouldLoad(true);
         }
       },
-      { threshold: 0.4, rootMargin: "80px 0px" },
+      { rootMargin: "180px 0px", threshold: 0.01 },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (isVisible) {
-      void video.play().catch(() => undefined);
-      return;
-    }
-    video.pause();
-  }, [isVisible]);
-
   return (
     <article
       ref={rootRef}
       data-grade={climb.grade}
-      data-visible={isVisible}
-      data-playing={isPlaying}
-      data-loading={loading}
       aria-label={`${climb.grade} at ${climb.gym} on ${climb.date}`}
-      className="group relative break-inside-avoid"
+      className="group relative"
     >
-      <div className="relative overflow-hidden bg-neutral-200 aspect-[3/4]">
+      <div className="relative aspect-video overflow-hidden bg-neutral-100">
         {posterUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -67,50 +50,41 @@ export function VideoCard({ climb, videoUrl, posterUrl, showMeta = false }: Vide
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-        ) : (
-          <div className="absolute inset-0 bg-neutral-200" />
-        )}
+        ) : null}
 
-        {hasBeenVisible && !mediaError ? (
+        {shouldLoad && !videoFailed ? (
           <video
-            ref={videoRef}
             src={videoUrl}
             poster={posterUrl}
             muted
             playsInline
-            loop
             preload="metadata"
             className="absolute inset-0 h-full w-full object-cover"
-            onCanPlay={() => {
-              if (isVisibleRef.current) {
-                void videoRef.current?.play().catch(() => undefined);
+            onError={() => setVideoFailed(true)}
+            onLoadedMetadata={(event) => {
+              const video = event.currentTarget;
+              if (video.currentTime < 0.05) {
+                video.currentTime = 0.1;
               }
-            }}
-            onWaiting={() => setLoading(true)}
-            onPlaying={() => {
-              setLoading(false);
-              setIsPlaying(true);
-            }}
-            onPause={() => setIsPlaying(false)}
-            onError={() => {
-              setMediaError(true);
-              setLoading(false);
-              setIsPlaying(false);
             }}
           />
         ) : null}
 
-        {loading ? <div className="absolute inset-0 bg-black/10" aria-hidden /> : null}
+        <div
+          className="absolute bottom-2 left-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+          aria-hidden
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4 fill-white drop-shadow"
+            aria-hidden
+          >
+            <path d="M8 5.14v13.72L19 12 8 5.14Z" />
+          </svg>
+        </div>
       </div>
 
-      {showMeta ? (
-        <dl className="mt-3 space-y-1 text-xs uppercase tracking-[0.18em] text-neutral-500">
-          <div>{climb.grade}</div>
-          <div>{climb.date}</div>
-          <div>{climb.gym}</div>
-          {climb.attempts !== undefined ? <div>{climb.attempts} attempts</div> : null}
-        </dl>
-      ) : null}
+      <p className="mt-1.5 text-[10px] leading-4 text-neutral-500">{climb.date}</p>
     </article>
   );
 }
