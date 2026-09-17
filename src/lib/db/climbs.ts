@@ -4,6 +4,7 @@ export interface ClimbsRepository {
   list(filter?: GradeFilter): Promise<Climb[]>;
   getById(id: string): Promise<Climb | null>;
   create(input: CreateClimbInput): Promise<Climb>;
+  delete(id: string): Promise<boolean>;
 }
 
 export type ClimbRow = {

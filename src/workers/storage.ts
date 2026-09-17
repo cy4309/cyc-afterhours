@@ -71,5 +71,15 @@ export function createR2Storage(credentials: R2Credentials): StorageService {
       }
       return sign(credentials, key, "GET", undefined, expiresInSeconds);
     },
+    async deleteObject(key) {
+      const client = createClient(credentials);
+      const signed = await client.sign(objectUrl(credentials, key).toString(), {
+        method: "DELETE",
+      });
+      const response = await fetch(signed);
+      if (!response.ok && response.status !== 404) {
+        throw new Error(`Unable to delete object (${response.status}).`);
+      }
+    },
   };
 }

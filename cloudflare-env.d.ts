@@ -15,6 +15,7 @@ declare global {
     R2_SECRET_ACCESS_KEY: string;
     R2_BUCKET_NAME: string;
     R2_PUBLIC_BASE_URL?: string;
+    ADMIN_PASSWORD?: string;
   }
 }
 

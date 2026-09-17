@@ -52,16 +52,32 @@ export async function saveClimb(input: {
   videoKey: string;
   posterKey?: string;
   duration?: number;
-}) {
+}): Promise<{ id: string; posterUrl?: string }> {
   const response = await fetch("/api/climbs", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(input),
   });
-  const payload = (await response.json()) as { error?: string };
+  const payload = (await response.json()) as {
+    climb?: { id: string; posterUrl?: string };
+    error?: string;
+  };
+
+  if (!response.ok || !payload.climb?.id) {
+    throw new Error(payload.error || "Unable to save climb.");
+  }
+
+  return payload.climb;
+}
+
+export async function deleteClimb(id: string): Promise<void> {
+  const response = await fetch(`/api/climbs/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
 
   if (!response.ok) {
-    throw new Error(payload.error || "Unable to save climb.");
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(payload?.error || "Unable to delete climb.");
   }
 }
 

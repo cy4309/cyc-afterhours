@@ -69,5 +69,15 @@ export function createD1ClimbsRepository(db: D1DatabaseLike): ClimbsRepository {
 
       return rowToClimb(row);
     },
+    async delete(id: string) {
+      const existing = await db
+        .prepare(`SELECT id FROM climbs WHERE id = ? LIMIT 1`)
+        .bind(id)
+        .first<{ id: string }>();
+      if (!existing) return false;
+
+      await db.prepare(`DELETE FROM climbs WHERE id = ?`).bind(id).run();
+      return true;
+    },
   };
 }

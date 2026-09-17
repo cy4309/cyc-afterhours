@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
+import { unauthorizedUnlessAdmin } from "@/lib/admin";
 import { requestVideoUpload } from "@/lib/climbs-service";
 import { isClimbGrade } from "@/lib/types/climbing";
 
 export async function POST(request: Request) {
+  const unauthorized = await unauthorizedUnlessAdmin(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const fileName = typeof body.fileName === "string" ? body.fileName : "";

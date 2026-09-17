@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
-    <div className="px-4 py-8">
-      <p className="text-sm uppercase tracking-[0.28em]">cyc-afterhours</p>
+    <div className="flex flex-1 items-center justify-center">
+      <p className="text-[11px] uppercase tracking-[0.32em]">cyc-afterhours</p>
     </div>
   );
 }

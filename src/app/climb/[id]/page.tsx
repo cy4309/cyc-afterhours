@@ -1,41 +1,32 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { VideoPlayer } from "@/components/climbing/VideoPlayer";
-import { getClimbWithMedia } from "@/lib/climbs-service";
+import { ClimbScene } from "@/components/climbing/ClimbScene";
+import { isAdmin } from "@/lib/admin";
+import { getClimbWithNeighbors } from "@/lib/climbs-service";
+import { parseGradeFilter } from "@/lib/types/climbing";
 
 export const dynamic = "force-dynamic";
 
 type ClimbPageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ grade?: string }>;
 };
 
-export default async function ClimbPage({ params }: ClimbPageProps) {
+export default async function ClimbPage({ params, searchParams }: ClimbPageProps) {
   const { id } = await params;
-  const climb = await getClimbWithMedia(id);
+  const grade = parseGradeFilter((await searchParams).grade);
+  const [scene, admin] = await Promise.all([getClimbWithNeighbors(id, grade), isAdmin()]);
 
-  if (!climb) {
+  if (!scene) {
     notFound();
   }
 
   return (
-    <section className="space-y-8 px-4 pb-16">
-      <Link href="/" className="text-xs uppercase tracking-[0.22em] text-neutral-400 hover:text-black">
-        Archive
-      </Link>
-
-      <div className="mx-auto w-full max-w-[24rem]">
-        <div className="aspect-[9/16] overflow-hidden bg-black">
-          <VideoPlayer videoUrl={climb.videoUrl} posterUrl={climb.posterUrl} />
-        </div>
-      </div>
-
-      <dl className="mx-auto max-w-[24rem] space-y-2 text-sm uppercase tracking-[0.22em]">
-        <div>{climb.grade}</div>
-        <div>{climb.gym}</div>
-        {climb.location ? <div>{climb.location}</div> : null}
-        <div>{climb.date}</div>
-        {climb.attempts !== undefined ? <div>{climb.attempts} attempts</div> : null}
-      </dl>
-    </section>
+    <ClimbScene
+      climb={scene.climb}
+      previous={scene.previous}
+      next={scene.next}
+      filter={scene.filter}
+      isAdmin={admin}
+    />
   );
 }

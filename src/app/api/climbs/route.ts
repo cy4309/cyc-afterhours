@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { unauthorizedUnlessAdmin } from "@/lib/admin";
 import { createClimbRecord, listClimbsWithMedia } from "@/lib/climbs-service";
 import {
   isClimbGrade,
@@ -14,6 +15,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await unauthorizedUnlessAdmin(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const input = parseCreateClimbInput(body);

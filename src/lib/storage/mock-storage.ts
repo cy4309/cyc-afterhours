@@ -38,10 +38,14 @@ export function createMockStorage(): StorageService {
     },
     async getReadUrl(key: string) {
       const safeKey = sanitizeObjectKey(key);
-      if (safeKey.startsWith("demo/")) {
-        return `/${safeKey}`;
-      }
       return `/api/media/${safeKey.split("/").map(encodeURIComponent).join("/")}`;
+    },
+    async deleteObject(key) {
+      try {
+        await fs.unlink(resolveLocalObjectPath(key));
+      } catch {
+        // Already gone.
+      }
     },
   };
 }

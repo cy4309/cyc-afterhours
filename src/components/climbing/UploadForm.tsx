@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { authorizeUpload, inspectVideoFile, putFileWithProgress, saveClimb } from "@/lib/api/climbing";
+import { useSharedMedia } from "@/components/climbing/SharedMedia";
+import { motionMs } from "@/lib/motion";
 import { FILTER_GRADES, type ClimbGrade } from "@/lib/types/climbing";
 
 type UploadStatus = "idle" | "authorizing" | "uploading" | "saving" | "success" | "error";
@@ -23,8 +24,9 @@ function parseAttempts(value: string): number | undefined {
 }
 
 export function UploadForm() {
-  const router = useRouter();
+  const { enterFromUpload } = useSharedMedia();
   const abortRef = useRef<AbortController | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [grade, setGrade] = useState<ClimbGrade>("V3");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -35,6 +37,8 @@ export function UploadForm() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [videoKey, setVideoKey] = useState<string | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
   const busy = status === "authorizing" || status === "uploading" || status === "saving";
   const statusLabel = useMemo(() => {
@@ -110,7 +114,7 @@ export function UploadForm() {
       }
 
       setStatus("saving");
-      await saveClimb({
+      const climb = await saveClimb({
         grade,
         date,
         gym: gym.trim(),
@@ -121,10 +125,10 @@ export function UploadForm() {
         duration,
       });
 
+      const localPoster = poster ? URL.createObjectURL(poster) : climb.posterUrl;
+      setPosterPreview(localPoster ?? null);
+      setSavedId(climb.id);
       setStatus("success");
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      router.push("/");
-      router.refresh();
     } catch (caught) {
       if (caught instanceof DOMException && caught.name === "AbortError") {
         setStatus("idle");
@@ -144,10 +148,49 @@ export function UploadForm() {
     setProgress(0);
   }
 
+  useLayoutEffect(() => {
+    if (status !== "success" || !savedId) return;
+
+    const start = () => {
+      const node = previewRef.current;
+      if (!node) return;
+      enterFromUpload({
+        id: savedId,
+        posterUrl: posterPreview ?? undefined,
+        from: node.getBoundingClientRect(),
+      });
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      start();
+      return;
+    }
+
+    const timer = window.setTimeout(start, motionMs.fast);
+    return () => window.clearTimeout(timer);
+  }, [enterFromUpload, posterPreview, savedId, status]);
+
+  if (status === "success") {
+    return (
+      <div className="mx-auto max-w-md space-y-4">
+        <div
+          ref={previewRef}
+          className="aspect-video overflow-hidden bg-[var(--paper)]"
+        >
+          {posterPreview ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={posterPreview} alt="" className="h-full w-full object-cover" />
+          ) : null}
+        </div>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">Uploaded</p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={onSubmit} className="mx-auto max-w-md space-y-8">
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Video</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Video</span>
         <input
           type="file"
           accept="video/mp4,video/quicktime,video/webm,video/x-m4v"
@@ -159,12 +202,12 @@ export function UploadForm() {
             setStatus("idle");
             setError(null);
           }}
-          className="block w-full text-sm file:mr-4 file:border-0 file:bg-black file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.18em] file:text-white"
+          className="block w-full text-sm file:mr-4 file:border-0 file:bg-[var(--ink)] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.18em] file:text-[var(--paper)]"
         />
       </label>
 
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Grade</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Grade</span>
         <select
           value={grade}
           disabled={busy}
@@ -180,7 +223,7 @@ export function UploadForm() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Date</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Date</span>
         <input
           type="date"
           value={date}
@@ -192,7 +235,7 @@ export function UploadForm() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Gym</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Gym</span>
         <input
           type="text"
           value={gym}
@@ -204,7 +247,7 @@ export function UploadForm() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Location</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Location</span>
         <input
           type="text"
           value={location}
@@ -215,7 +258,7 @@ export function UploadForm() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-xs uppercase tracking-[0.22em]">Attempts</span>
+        <span className="text-[11px] uppercase tracking-[0.28em]">Attempts</span>
         <input
           type="number"
           min={1}
@@ -227,25 +270,25 @@ export function UploadForm() {
       </label>
 
       <div className="space-y-3">
-        <div className="h-px w-full bg-neutral-200">
-          <div className="h-px bg-black transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-px w-full bg-black/10">
+          <div className="h-px bg-[var(--ink)] transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">{statusLabel}</p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">{statusLabel}</p>
       </div>
 
       <div className="flex items-center gap-6">
         {status === "error" ? (
-          <button type="submit" className="text-sm uppercase tracking-[0.22em]">
+          <button type="submit" className="text-[11px] uppercase tracking-[0.28em]">
             Retry
           </button>
         ) : (
-          <button type="submit" disabled={busy} className="text-sm uppercase tracking-[0.22em] disabled:text-neutral-400">
+          <button type="submit" disabled={busy} className="text-[11px] uppercase tracking-[0.28em] disabled:text-[var(--mute)]">
             Upload
           </button>
         )}
 
         {busy ? (
-          <button type="button" onClick={onCancel} className="text-sm uppercase tracking-[0.22em] text-neutral-400">
+          <button type="button" onClick={onCancel} className="text-[11px] uppercase tracking-[0.28em] text-[var(--mute)]">
             Cancel
           </button>
         ) : null}

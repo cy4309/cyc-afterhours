@@ -59,3 +59,12 @@ export function parseGradeFilter(value: string | undefined): GradeFilter {
   if (!value) return "ALL";
   return isGradeFilter(value) ? value : "ALL";
 }
+
+export type ClimbNeighbor = {
+  id: string;
+  posterUrl?: string;
+};
+
+export function climbHref(id: string, filter: GradeFilter = "ALL"): string {
+  return filter === "ALL" ? `/climb/${id}` : `/climb/${id}?grade=${filter}`;
+}

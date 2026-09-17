@@ -1,30 +1,45 @@
-import Link from "next/link";
+"use client";
+
 import { FILTER_GRADES, type GradeFilter } from "@/lib/types/climbing";
 
 type GradeFilterProps = {
   active: GradeFilter;
+  onSelect?: (grade: GradeFilter) => void;
 };
 
 const FILTERS: GradeFilter[] = ["ALL", ...FILTER_GRADES];
 
-export function GradeFilter({ active }: GradeFilterProps) {
+export function GradeFilter({ active, onSelect }: GradeFilterProps) {
   return (
-    <nav aria-label="Grade filter" className="flex flex-wrap gap-x-4 gap-y-2">
+    <nav
+      aria-label="Grade filter"
+      className="flex flex-wrap gap-x-6 gap-y-2 border-b border-black/10 pb-3"
+    >
       {FILTERS.map((grade) => {
-        const href = grade === "ALL" ? "/" : `/?grade=${grade}`;
         const isActive = active === grade;
+        const className = isActive
+          ? "text-[11px] tracking-[0.28em] uppercase text-[var(--ink)]"
+          : "text-[11px] tracking-[0.28em] uppercase text-[var(--mute)] hover:text-[var(--ink)]";
+
+        if (onSelect) {
+          return (
+            <button
+              key={grade}
+              type="button"
+              aria-pressed={isActive}
+              className={`${className} cursor-pointer`}
+              onClick={() => onSelect(grade)}
+            >
+              {grade}
+            </button>
+          );
+        }
+
+        const href = grade === "ALL" ? "/" : `/?grade=${grade}`;
         return (
-          <Link
-            key={grade}
-            href={href}
-            className={
-              isActive
-                ? "text-xs tracking-[0.22em] uppercase"
-                : "text-xs tracking-[0.22em] uppercase text-neutral-400 hover:text-black"
-            }
-          >
+          <a key={grade} href={href} className={className}>
             {grade}
-          </Link>
+          </a>
         );
       })}
     </nav>

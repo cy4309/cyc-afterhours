@@ -16,7 +16,6 @@ npm run dev
 
 - climb metadata is stored in `.data/climbs.json`
 - uploaded videos are stored in `.data/uploads/`
-- demo posters come from `public/demo/`
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -78,6 +77,7 @@ npx wrangler secret put R2_ACCOUNT_ID
 npx wrangler secret put R2_ACCESS_KEY_ID
 npx wrangler secret put R2_SECRET_ACCESS_KEY
 npx wrangler secret put R2_BUCKET_NAME
+npx wrangler secret put ADMIN_PASSWORD
 ```
 
 `wrangler.jsonc` already sets `DATA_SOURCE=cloudflare`.

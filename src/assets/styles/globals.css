@@ -2,17 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --paper: #ffffff;
+  --ink: #111111;
+  --mute: #8a8a8a;
+  --motion-fast: 200ms;
+  --motion-normal: 450ms;
+  --motion-slow: 800ms;
+  --motion-scene: 1000ms;
+  --motion-ease-micro: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --motion-ease-layout: cubic-bezier(0.19, 1, 0.22, 1);
+  --motion-ease-scene: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
 html,
 body {
   min-height: 100%;
 }
 
 body {
+  background: var(--paper);
+  color: var(--ink);
   font-family:
     "Helvetica Neue",
     Helvetica,
     Arial,
     sans-serif;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-normal: 0ms;
+    --motion-slow: 0ms;
+    --motion-scene: 0ms;
+  }
 }
 
 * {

@@ -63,7 +63,7 @@ export function ScrollArea({ children, className }: ScrollAreaProps) {
           aria-hidden
         >
           <div
-            className="absolute right-0 w-px bg-black"
+            className="absolute right-0 w-px bg-[var(--ink)]"
             style={{ top: thumb.top, height: thumb.height }}
           />
         </div>

@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import { Archive } from "@/components/climbing/Archive";
-import { GradeFilter } from "@/components/climbing/GradeFilter";
+import { ArchiveIntro } from "@/components/climbing/ArchiveIntro";
+import { ARCHIVE_ENTERED_COOKIE } from "@/lib/archive-entered";
 import { listClimbsWithMedia } from "@/lib/climbs-service";
 import { parseGradeFilter } from "@/lib/types/climbing";
 
@@ -12,15 +14,15 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const grade = parseGradeFilter(params.grade);
-  const climbs = await listClimbsWithMedia(grade);
+  const [climbs, cookieStore] = await Promise.all([listClimbsWithMedia("ALL"), cookies()]);
+  const playIntro = cookieStore.get(ARCHIVE_ENTERED_COOKIE)?.value !== "1";
 
   return (
-    <section className="flex flex-1 flex-col items-center justify-center">
+    <section className="relative flex flex-1 flex-col items-center justify-center">
       <h1 className="sr-only">Climbing Archive</h1>
-      <div className="w-full px-4 pb-4">
-        <GradeFilter active={grade} />
-      </div>
-      <Archive climbs={climbs} />
+      <ArchiveIntro playIntro={playIntro}>
+        <Archive climbs={climbs} initialFilter={grade} />
+      </ArchiveIntro>
     </section>
   );
 }

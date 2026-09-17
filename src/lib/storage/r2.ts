@@ -11,6 +11,7 @@ export interface StorageService {
     expiresInSeconds?: number;
   }): Promise<SignedUpload>;
   getReadUrl(key: string, expiresInSeconds?: number): Promise<string>;
+  deleteObject(key: string): Promise<void>;
 }
 
 export async function getStorageService(): Promise<StorageService> {
