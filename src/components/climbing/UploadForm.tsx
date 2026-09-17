@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
-import { authorizeUpload, putFileWithProgress, readVideoDuration, saveClimb } from "@/lib/api/climbing";
+import { authorizeUpload, inspectVideoFile, putFileWithProgress, saveClimb } from "@/lib/api/climbing";
 import { FILTER_GRADES, type ClimbGrade } from "@/lib/types/climbing";
 
 type UploadStatus = "idle" | "authorizing" | "uploading" | "saving" | "success" | "error";
@@ -73,8 +73,9 @@ export function UploadForm() {
 
     try {
       let key = videoKey;
-      const duration = await readVideoDuration(file);
+      const { duration, poster } = await inspectVideoFile(file);
       const contentType = fileContentType(file);
+      let posterKey: string | undefined;
 
       if (!key) {
         setStatus("authorizing");
@@ -95,6 +96,17 @@ export function UploadForm() {
         );
         key = authorization.videoKey;
         setVideoKey(key);
+
+        if (poster) {
+          await putFileWithProgress(
+            authorization.posterUploadUrl,
+            poster,
+            authorization.posterHeaders,
+            () => undefined,
+            controller.signal,
+          );
+          posterKey = authorization.posterKey;
+        }
       }
 
       setStatus("saving");
@@ -105,6 +117,7 @@ export function UploadForm() {
         location: location.trim() || undefined,
         attempts: parseAttempts(attempts),
         videoKey: key,
+        posterKey,
         duration,
       });
 

@@ -243,7 +243,7 @@ export function createMockClimbsRepository(): ClimbsRepository {
       const filtered =
         !filter || filter === "ALL" ? climbs : climbs.filter((climb) => climb.grade === filter);
       return filtered.sort(
-        (a, b) => b.createdAt.localeCompare(a.createdAt) || b.date.localeCompare(a.date),
+        (a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
       );
     },
     async getById(id: string) {

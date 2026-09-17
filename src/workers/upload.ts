@@ -1,4 +1,4 @@
-import { buildClimbObjectKey, extensionFromFileName, newId } from "@/lib/keys";
+import { buildClimbObjectKey, extensionFromFileName, newId, posterKeyFromVideoKey } from "@/lib/keys";
 import type { StorageService } from "@/lib/storage/r2";
 import type { ClimbGrade, UploadAuthorization } from "@/lib/types/climbing";
 
@@ -35,15 +35,25 @@ export async function authorizeVideoUpload(
     extension,
   });
 
-  const signed = await storage.createUpload({
-    key: videoKey,
-    contentType: input.contentType,
-  });
+  const posterKey = posterKeyFromVideoKey(videoKey);
+  const [signed, posterSigned] = await Promise.all([
+    storage.createUpload({
+      key: videoKey,
+      contentType: input.contentType,
+    }),
+    storage.createUpload({
+      key: posterKey,
+      contentType: "image/jpeg",
+    }),
+  ]);
 
   return {
     videoKey,
     uploadUrl: signed.uploadUrl,
     method: signed.method,
     headers: signed.headers,
+    posterKey,
+    posterUploadUrl: posterSigned.uploadUrl,
+    posterHeaders: posterSigned.headers,
   };
 }

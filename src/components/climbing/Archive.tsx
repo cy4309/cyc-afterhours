@@ -17,8 +17,8 @@ export function Archive({ climbs }: ArchiveProps) {
   }
 
   return (
-    <ScrollArea className="h-[250px] w-full md:h-[400px]">
-      <div className="grid grid-cols-4 gap-x-2 gap-y-2 px-4">
+    <ScrollArea className="w-full h-dvh md:h-[400px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2 gap-y-2 px-4">
         {climbs.map((climb) => (
           <Link key={climb.id} href={`/climb/${climb.id}`} className="block">
             <VideoCard

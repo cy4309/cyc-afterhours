@@ -28,6 +28,13 @@ export function extensionFromFileName(fileName: string, fallback: string): strin
   return ext && /^[a-z0-9]+$/.test(ext) ? ext : fallback;
 }
 
+export function posterKeyFromVideoKey(videoKey: string): string {
+  const sanitized = sanitizeObjectKey(videoKey);
+  const dot = sanitized.lastIndexOf(".");
+  const withoutExt = dot > 0 ? sanitized.slice(0, dot) : sanitized;
+  return `${withoutExt}.jpg`;
+}
+
 export function sanitizeObjectKey(key: string): string {
   const segments = key.replaceAll("\\", "/").split("/").filter((segment) => {
     return segment.length > 0 && segment !== "." && segment !== "..";

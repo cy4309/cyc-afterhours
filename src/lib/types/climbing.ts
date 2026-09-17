@@ -42,6 +42,9 @@ export interface UploadAuthorization {
   uploadUrl: string;
   method: "PUT";
   headers: Record<string, string>;
+  posterKey: string;
+  posterUploadUrl: string;
+  posterHeaders: Record<string, string>;
 }
 
 export function isClimbGrade(value: string): value is ClimbGrade {

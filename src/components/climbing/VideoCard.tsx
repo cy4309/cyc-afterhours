@@ -50,12 +50,9 @@ export function VideoCard({
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-        ) : null}
-
-        {shouldLoad && !videoFailed ? (
+        ) : shouldLoad && !videoFailed ? (
           <video
             src={videoUrl}
-            poster={posterUrl}
             muted
             playsInline
             preload="metadata"
