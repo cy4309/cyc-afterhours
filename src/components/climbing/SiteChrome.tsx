@@ -21,6 +21,16 @@ function getServerSnapshot() {
   return false;
 }
 
+const HOLD_CLASS =
+  "size-[18px] origin-center transition-transform duration-fast ease-micro group-hover:scale-110 group-active:scale-125 motion-reduce:transform-none motion-reduce:transition-none";
+
+function HoldMark() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/hold-2.png" alt="" width={18} height={18} className={HOLD_CLASS} />
+  );
+}
+
 type SiteChromeProps = {
   isAdmin: boolean;
 };
@@ -61,18 +71,13 @@ export function SiteChrome({ isAdmin }: SiteChromeProps) {
             className="group cursor-pointer"
             onClick={toggle}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/hold-2.png"
-              alt=""
-              width={18}
-              height={18}
-              className="size-[18px] origin-center transition-transform duration-fast ease-micro group-hover:scale-110 group-active:scale-125 motion-reduce:transform-none motion-reduce:transition-none"
-            />
+            <HoldMark />
           </button>
         </div>
       ) : (
-        <span />
+        <Link href="/upload" aria-label="Upload" className="group">
+          <HoldMark />
+        </Link>
       )}
     </header>
   );
