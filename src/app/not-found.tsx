@@ -1,6 +1,6 @@
 export default function NotFound() {
   return (
-    <p className="px-4 text-[11px] uppercase tracking-[0.28em] text-[var(--mute)]">
+    <p className="px-4 text-kicker uppercase tracking-kicker text-mute">
       Climb not found.
     </p>
   );

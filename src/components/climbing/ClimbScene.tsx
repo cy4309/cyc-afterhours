@@ -101,7 +101,7 @@ export function ClimbScene({
 
   return (
     <section
-      className={`space-y-6 px-4 pt-20 pb-20 ${
+      className={`space-y-6 px-4 pt-20 pb-safe-20 ${
         transitioning ? "pointer-events-none opacity-0" : ""
       }`}
       onTouchStart={(event) => {
@@ -119,7 +119,7 @@ export function ClimbScene({
       <div className="mx-auto flex w-full items-center justify-between">
         <button
           type="button"
-          className="cursor-pointer text-[11px] uppercase tracking-[0.28em] text-[var(--mute)] hover:text-[var(--ink)]"
+          className="cursor-pointer text-kicker uppercase tracking-kicker text-mute hover:text-ink"
           onClick={() => {
             const node = frameRef.current;
             if (!node) return;
@@ -137,7 +137,7 @@ export function ClimbScene({
           {previous ? (
             <button
               type="button"
-              className="cursor-pointer text-[11px] uppercase tracking-[0.28em] text-[var(--mute)] hover:text-[var(--ink)]"
+              className="cursor-pointer text-kicker uppercase tracking-kicker text-mute hover:text-ink"
               onClick={() => go("prev")}
             >
               Previous
@@ -146,7 +146,7 @@ export function ClimbScene({
           {next ? (
             <button
               type="button"
-              className="cursor-pointer text-[11px] uppercase tracking-[0.28em] text-[var(--mute)] hover:text-[var(--ink)]"
+              className="cursor-pointer text-kicker uppercase tracking-kicker text-mute hover:text-ink"
               onClick={() => go("next")}
             >
               Next
@@ -170,20 +170,22 @@ export function ClimbScene({
       </div>
 
       <dl ref={metaRef} className="mx-auto w-full flex items-center">
-        <div className="text-sm uppercase tracking-[0.28em]">{climb.grade}</div>
-        <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+        <div className="text-sm uppercase tracking-kicker text-mute">
+          {climb.grade}
+        </div>
+        <div className="text-kicker uppercase tracking-meta text-mute">
           {climb.gym}
         </div>
         {climb.location ? (
-          <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+          <div className="text-kicker uppercase tracking-meta text-mute">
             {climb.location}
           </div>
         ) : null}
-        <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+        <div className="text-kicker uppercase tracking-meta text-mute">
           {formatClimbDate(climb.date)}
         </div>
         {attempts ? (
-          <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+          <div className="text-kicker uppercase tracking-meta text-mute">
             {attempts} attempts
           </div>
         ) : null}
@@ -193,7 +195,7 @@ export function ClimbScene({
           <button
             type="button"
             disabled={deleting}
-            className="cursor-pointer text-[11px] uppercase tracking-[0.28em] text-[var(--mute)] hover:text-[var(--ink)] disabled:text-neutral-300"
+            className="cursor-pointer text-kicker uppercase tracking-kicker text-mute hover:text-ink disabled:text-mute"
             onClick={async () => {
               if (deleting) return;
               if (!window.confirm("Delete this climb?")) return;

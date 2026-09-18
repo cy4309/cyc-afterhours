@@ -175,14 +175,14 @@ export function UploadForm() {
       <div className="mx-auto max-w-md space-y-4">
         <div
           ref={previewRef}
-          className="aspect-video overflow-hidden bg-[var(--paper)]"
+          className="aspect-video overflow-hidden bg-paper"
         >
           {posterPreview ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={posterPreview} alt="" className="h-full w-full object-cover" />
           ) : null}
         </div>
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">Uploaded</p>
+        <p className="text-kicker uppercase tracking-meta text-mute">Uploaded</p>
       </div>
     );
   }
@@ -190,7 +190,7 @@ export function UploadForm() {
   return (
     <form onSubmit={onSubmit} className="mx-auto max-w-md space-y-8">
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Video</span>
+        <span className="text-kicker uppercase tracking-kicker">Video</span>
         <input
           type="file"
           accept="video/mp4,video/quicktime,video/webm,video/x-m4v"
@@ -202,17 +202,17 @@ export function UploadForm() {
             setStatus("idle");
             setError(null);
           }}
-          className="block w-full text-sm file:mr-4 file:border-0 file:bg-[var(--ink)] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.18em] file:text-[var(--paper)]"
+          className="block w-full text-sm file:mr-4 file:border-0 file:bg-ink file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-caption file:text-paper"
         />
       </label>
 
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Grade</span>
+        <span className="text-kicker uppercase tracking-kicker">Grade</span>
         <select
           value={grade}
           disabled={busy}
           onChange={(event) => setGrade(event.target.value as ClimbGrade)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
         >
           {FILTER_GRADES.map((value) => (
             <option key={value} value={value}>
@@ -223,72 +223,72 @@ export function UploadForm() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Date</span>
+        <span className="text-kicker uppercase tracking-kicker">Date</span>
         <input
           type="date"
           value={date}
           disabled={busy}
           onChange={(event) => setDate(event.target.value)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
           required
         />
       </label>
 
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Gym</span>
+        <span className="text-kicker uppercase tracking-kicker">Gym</span>
         <input
           type="text"
           value={gym}
           disabled={busy}
           onChange={(event) => setGym(event.target.value)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
           required
         />
       </label>
 
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Location</span>
+        <span className="text-kicker uppercase tracking-kicker">Location</span>
         <input
           type="text"
           value={location}
           disabled={busy}
           onChange={(event) => setLocation(event.target.value)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
         />
       </label>
 
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Attempts</span>
+        <span className="text-kicker uppercase tracking-kicker">Attempts</span>
         <input
           type="number"
           min={1}
           value={attempts}
           disabled={busy}
           onChange={(event) => setAttempts(event.target.value)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
         />
       </label>
 
       <div className="space-y-3">
-        <div className="h-px w-full bg-black/10">
-          <div className="h-px bg-[var(--ink)] transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-px w-full bg-ink/10">
+          <div className="h-px bg-ink transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">{statusLabel}</p>
+        <p className="text-kicker uppercase tracking-meta text-mute">{statusLabel}</p>
       </div>
 
       <div className="flex items-center gap-6">
         {status === "error" ? (
-          <button type="submit" className="text-[11px] uppercase tracking-[0.28em]">
+          <button type="submit" className="text-kicker uppercase tracking-kicker">
             Retry
           </button>
         ) : (
-          <button type="submit" disabled={busy} className="text-[11px] uppercase tracking-[0.28em] disabled:text-[var(--mute)]">
+          <button type="submit" disabled={busy} className="text-kicker uppercase tracking-kicker disabled:text-mute">
             Upload
           </button>
         )}
 
         {busy ? (
-          <button type="button" onClick={onCancel} className="text-[11px] uppercase tracking-[0.28em] text-[var(--mute)]">
+          <button type="button" onClick={onCancel} className="text-kicker uppercase tracking-kicker text-mute">
             Cancel
           </button>
         ) : null}

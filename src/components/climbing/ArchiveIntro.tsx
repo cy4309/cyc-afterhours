@@ -3,28 +3,24 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import gsap from "gsap";
 import { useSharedMedia } from "@/components/climbing/SharedMedia";
-import { ARCHIVE_ENTERED_COOKIE } from "@/lib/archive-entered";
 import { motion, motionEase } from "@/lib/motion";
 
 type ArchiveIntroProps = {
-  playIntro: boolean;
   children: ReactNode;
 };
 
-function markEntered() {
-  document.cookie = `${ARCHIVE_ENTERED_COOKIE}=1; Path=/; SameSite=Lax`;
-}
+let introConsumed = false;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function ArchiveIntro({ playIntro, children }: ArchiveIntroProps) {
+export function ArchiveIntro({ children }: ArchiveIntroProps) {
   const { state } = useSharedMedia();
   const overlayRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLParagraphElement>(null);
   const phaseRef = useRef(state.phase);
-  const [visible, setVisible] = useState(playIntro);
+  const [visible, setVisible] = useState(true);
 
   useLayoutEffect(() => {
     phaseRef.current = state.phase;
@@ -40,24 +36,34 @@ export function ArchiveIntro({ playIntro, children }: ArchiveIntroProps) {
   }, [visible]);
 
   useLayoutEffect(() => {
-    if (!playIntro) return;
+    if (!visible) return;
 
-    if (prefersReducedMotion() || phaseRef.current !== "idle") {
-      markEntered();
+    const finish = () => {
+      introConsumed = true;
+      const chrome = document.querySelector<HTMLElement>("[data-site-wordmark]");
+      if (chrome) gsap.set(chrome, { clearProps: "opacity" });
       setVisible(false);
+    };
+
+    if (introConsumed || prefersReducedMotion() || phaseRef.current !== "idle") {
+      finish();
       return;
     }
 
     const overlay = overlayRef.current;
     const wordmark = wordmarkRef.current;
+    const chrome = document.querySelector<HTMLElement>("[data-site-wordmark]");
     if (!overlay || !wordmark) return;
 
-    const done = () => {
-      markEntered();
-      setVisible(false);
-    };
+    gsap.set(wordmark, { x: 0, y: 0, opacity: 1 });
+    if (chrome) gsap.set(chrome, { opacity: 0 });
 
-    const timeline = gsap.timeline({ onComplete: done });
+    const from = wordmark.getBoundingClientRect();
+    const to = chrome?.getBoundingClientRect();
+    const dx = to ? to.left - from.left : 0;
+    const dy = to ? to.top - from.top : 0;
+
+    const timeline = gsap.timeline({ onComplete: finish });
     timeline
       .fromTo(
         wordmark,
@@ -67,6 +73,11 @@ export function ArchiveIntro({ playIntro, children }: ArchiveIntroProps) {
       .to(
         overlay,
         { yPercent: -100, duration: 0.75, ease: motionEase.scene },
+        0.35,
+      )
+      .to(
+        wordmark,
+        { x: dx, y: dy, duration: 0.75, ease: motionEase.scene },
         0.35,
       );
 
@@ -80,21 +91,26 @@ export function ArchiveIntro({ playIntro, children }: ArchiveIntroProps) {
     return () => {
       timeline.kill();
       overlay.removeEventListener("pointerdown", skip);
+      if (chrome) gsap.set(chrome, { clearProps: "opacity" });
+      gsap.set(wordmark, { clearProps: "transform,opacity" });
     };
-  }, [playIntro]);
+  }, [visible]);
 
   return (
-    <div className="relative flex w-full flex-1 flex-col overflow-hidden pt-20">
+    <div className="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden md:flex-none">
       {children}
       {visible ? (
-        <div
-          ref={overlayRef}
-          className="fixed inset-0 z-40 flex items-center justify-center bg-[var(--paper)]"
-        >
-          <p ref={wordmarkRef} className="text-[11px] uppercase tracking-[0.32em]">
-            cyc-afterhours
-          </p>
-        </div>
+        <>
+          <div ref={overlayRef} className="fixed inset-0 z-40 bg-paper" />
+          <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center">
+            <p
+              ref={wordmarkRef}
+              className="inline-block text-kicker uppercase tracking-mark"
+            >
+              cyc-afterhours
+            </p>
+          </div>
+        </>
       ) : null}
     </div>
   );

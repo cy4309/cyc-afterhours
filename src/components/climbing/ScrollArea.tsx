@@ -37,23 +37,24 @@ export function ScrollArea({ children, className }: ScrollAreaProps) {
     const el = viewportRef.current;
     if (!el) return;
 
-    update();
+    const frame = requestAnimationFrame(update);
     el.addEventListener("scroll", update, { passive: true });
     const observer = new ResizeObserver(update);
     observer.observe(el);
     if (el.firstElementChild) observer.observe(el.firstElementChild);
 
     return () => {
+      cancelAnimationFrame(frame);
       el.removeEventListener("scroll", update);
       observer.disconnect();
     };
   }, [update]);
 
   return (
-    <div className={["relative", className].filter(Boolean).join(" ")}>
+    <div className={["relative min-h-0", className].filter(Boolean).join(" ")}>
       <div
         ref={viewportRef}
-        className="h-full overflow-y-auto overscroll-contain"
+        className="absolute inset-0 overflow-y-auto overscroll-contain"
       >
         {children}
       </div>
@@ -63,7 +64,7 @@ export function ScrollArea({ children, className }: ScrollAreaProps) {
           aria-hidden
         >
           <div
-            className="absolute right-0 w-px bg-[var(--ink)]"
+            className="absolute right-0 w-px bg-ink"
             style={{ top: thumb.top, height: thumb.height }}
           />
         </div>

@@ -92,7 +92,7 @@ function PosterPane({ src }: { src?: string }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={src} alt="" className="h-full w-full object-contain" />
       ) : (
-        <div className="h-full w-full bg-[var(--paper)]" />
+        <div className="h-full w-full bg-paper" />
       )}
     </div>
   );
@@ -168,7 +168,7 @@ function SharedMediaOverlay({
       ref={overlayRef}
       aria-hidden
       className={`pointer-events-none fixed z-50 overflow-hidden ${
-        paging ? "bg-black" : "bg-[var(--paper)]"
+        paging ? "bg-black" : "bg-paper"
       }`}
     >
       {paging ? (
@@ -189,7 +189,7 @@ function SharedMediaOverlay({
         // eslint-disable-next-line @next/next/no-img-element
         <img src={state.posterUrl} alt="" className="h-full w-full object-cover" />
       ) : (
-        <div className="h-full w-full bg-[var(--paper)]" />
+        <div className="h-full w-full bg-paper" />
       )}
     </div>
   );

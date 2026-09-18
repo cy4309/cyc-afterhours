@@ -36,19 +36,19 @@ export function AdminGate() {
   return (
     <form onSubmit={onSubmit} className="mx-auto max-w-md space-y-8">
       <label className="block space-y-2">
-        <span className="text-[11px] uppercase tracking-[0.28em]">Password</span>
+        <span className="text-kicker uppercase tracking-kicker">Password</span>
         <input
           type="password"
           value={password}
           autoComplete="current-password"
           disabled={busy}
           onChange={(event) => setPassword(event.target.value)}
-          className="w-full border-b border-black bg-transparent py-2 text-sm outline-none"
+          className="w-full border-b border-ink bg-transparent py-2 text-sm outline-none"
           required
         />
       </label>
-      {error ? <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">{error}</p> : null}
-      <button type="submit" disabled={busy} className="text-[11px] uppercase tracking-[0.28em] disabled:text-[var(--mute)]">
+      {error ? <p className="text-kicker uppercase tracking-meta text-mute">{error}</p> : null}
+      <button type="submit" disabled={busy} className="text-kicker uppercase tracking-kicker disabled:text-mute">
         Enter
       </button>
     </form>
@@ -63,7 +63,7 @@ export function AdminSignOut() {
     <button
       type="button"
       disabled={busy}
-      className="cursor-pointer text-[11px] uppercase tracking-[0.28em] text-[var(--mute)] hover:text-[var(--ink)] disabled:text-[var(--mute)]"
+      className="cursor-pointer text-kicker uppercase tracking-kicker text-mute hover:text-ink disabled:text-mute"
       onClick={async () => {
         setBusy(true);
         await fetch("/api/admin/logout", { method: "POST" });

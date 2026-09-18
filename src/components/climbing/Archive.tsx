@@ -181,20 +181,20 @@ export function Archive({ climbs, initialFilter }: ArchiveProps) {
 
   return (
     <>
-      <div className="w-full px-4 pb-5">
+      <div className="w-full shrink-0 px-4 pb-5">
         <GradeFilter active={filter} onSelect={select} />
       </div>
 
       {visible.length === 0 ? (
-        <p className="w-full px-4 text-center text-[11px] uppercase tracking-[0.28em] text-[var(--mute)]">
+        <p className="w-full px-4 text-center text-kicker uppercase tracking-kicker text-mute">
           No climbs.
         </p>
       ) : (
-        <ScrollArea className="h-dvh w-full md:h-[400px]">
-          <div ref={gridRef} className="relative space-y-10 px-4 pb-16">
+        <ScrollArea className="min-h-0 w-full flex-1 md:h-[400px] md:flex-none">
+          <div ref={gridRef} className="relative space-y-10 px-4 pb-safe-16">
             {months.map((group) => (
               <section key={group.month} aria-label={group.month} className="space-y-3">
-                <h2 className="border-b border-black/10 pb-2 text-[11px] uppercase tracking-[0.28em] text-[var(--mute)]">
+                <h2 className="border-b border-ink/10 pb-2 text-kicker uppercase tracking-kicker text-mute">
                   {group.month}
                 </h2>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4">

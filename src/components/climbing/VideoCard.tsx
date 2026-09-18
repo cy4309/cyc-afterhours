@@ -42,8 +42,8 @@ export function VideoCard({
       aria-label={`${climb.grade} at ${climb.gym} on ${climb.date}`}
       className="group relative"
     >
-      <div className="relative aspect-video overflow-hidden bg-[var(--paper)]" data-media-frame>
-        <div className="absolute inset-0 origin-center transition-transform duration-[var(--motion-fast)] ease-[var(--motion-ease-micro)] group-hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none">
+      <div className="relative aspect-video overflow-hidden bg-paper" data-media-frame>
+        <div className="absolute inset-0 origin-center transition-transform duration-fast ease-micro group-hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none">
           {posterUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -70,9 +70,9 @@ export function VideoCard({
         </div>
       </div>
 
-      <div className="mt-2 space-y-0.5 text-[10px] uppercase leading-4 tracking-[0.18em] text-[var(--mute)]">
+      <div className="mt-2 space-y-0.5 text-caption uppercase leading-4 tracking-caption text-mute">
         <p>{formatClimbDate(climb.date)}</p>
-        <p className="opacity-100 transition-opacity duration-[var(--motion-fast)] ease-[var(--motion-ease-micro)] [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 motion-reduce:opacity-100 motion-reduce:transition-none">
+        <p className="opacity-100 transition-opacity duration-fast ease-micro [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 motion-reduce:opacity-100 motion-reduce:transition-none">
           {climb.grade}
           {attempts ? ` · ${attempts}` : null}
         </p>

@@ -70,7 +70,9 @@ Optional: `R2_PUBLIC_BASE_URL` if the bucket has a public custom domain. Otherwi
 
 ## Production
 
-Set Worker secrets:
+`wrangler.jsonc` already sets `DATA_SOURCE=cloudflare`. Production origin is `https://afterhours.cyc-studio.com`.
+
+Set Worker secrets once:
 
 ```bash
 npx wrangler secret put R2_ACCOUNT_ID
@@ -80,16 +82,28 @@ npx wrangler secret put R2_BUCKET_NAME
 npx wrangler secret put ADMIN_PASSWORD
 ```
 
-`wrangler.jsonc` already sets `DATA_SOURCE=cloudflare`.
-
-Deploy with the official Next.js adapter:
-
-```bash
-npm run deploy
-```
-
 Requires Node.js 22+ for Wrangler 4 / OpenNext preview and deploy. `npm run dev` with mock data works on Node 20.
 
-Replace the D1 database id placeholder in `wrangler.jsonc` before the first deploy.
+### Code vs data
+
+| What changed | How it goes live |
+|---|---|
+| Pages, styles, app code | Push to `main`. Cloudflare Worker Builds deploys automatically. |
+| Local mock climbs (`.data/climbs.json` + `.data/uploads`) | `node scripts/push-local-climbs.mjs` |
+| Local posters | `node scripts/backfill-posters.mjs` |
+| Upload while logged in on production | Already in R2 + D1. Nothing else to run. |
+| D1 schema | `npm run db:migrate` |
+
+`.data/` is gitignored. A git push never uploads videos or climb records.
+
+`npm run deploy` rebuilds and publishes the Worker from this machine. It is the same **code** deploy as Worker Builds, not a data sync. Skip it when auto-deploy from `main` is working.
+
+Push local mock climbs to production R2 + D1:
+
+```bash
+node scripts/push-local-climbs.mjs
+```
+
+That script copies video files to R2 and `INSERT OR IGNORE`s rows into D1. It does not update existing rows. Generate and upload posters with `node scripts/backfill-posters.mjs`.
 
 Product brief: [`docs/project-brief.md`](docs/project-brief.md)
