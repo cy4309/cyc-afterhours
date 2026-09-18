@@ -5,7 +5,8 @@
         "origins": [
           "http://localhost:3000",
           "http://127.0.0.1:3000",
-          "https://cyc-afterhours.cy4309.workers.dev"
+          "https://cyc-afterhours.cy4309.workers.dev",
+          "https://afterhours.cyc-studio.com"
         ],
         "methods": ["GET", "PUT", "HEAD"],
         "headers": ["*"]
