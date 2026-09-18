@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import gsap from "gsap";
 import { useSharedMedia } from "@/components/climbing/SharedMedia";
+import { Wordmark } from "@/components/climbing/Wordmark";
 import { motion, motionEase } from "@/lib/motion";
 
 type ArchiveIntroProps = {
@@ -18,7 +19,7 @@ function prefersReducedMotion(): boolean {
 export function ArchiveIntro({ children }: ArchiveIntroProps) {
   const { state } = useSharedMedia();
   const overlayRef = useRef<HTMLDivElement>(null);
-  const wordmarkRef = useRef<HTMLParagraphElement>(null);
+  const wordmarkRef = useRef<HTMLDivElement>(null);
   const phaseRef = useRef(state.phase);
   const [visible, setVisible] = useState(true);
 
@@ -103,12 +104,9 @@ export function ArchiveIntro({ children }: ArchiveIntroProps) {
         <>
           <div ref={overlayRef} className="fixed inset-0 z-40 bg-paper" />
           <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center">
-            <p
-              ref={wordmarkRef}
-              className="inline-block text-kicker uppercase tracking-mark"
-            >
-              cyc-afterhours
-            </p>
+            <div ref={wordmarkRef} className="inline-flex">
+              <Wordmark />
+            </div>
           </div>
         </>
       ) : null}

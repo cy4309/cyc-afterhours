@@ -7,6 +7,10 @@ import "@/assets/styles/globals.css";
 export const metadata: Metadata = {
   title: "cyc-afterhours",
   description: "cyc-afterhours. A visual climbing archive documenting bouldering results through video.",
+  icons: {
+    icon: [{ url: "/cyc-logo.png", type: "image/png" }],
+    apple: "/cyc-logo.png",
+  },
 };
 
 export const viewport: Viewport = {
