@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { SharedMediaProvider } from "@/components/climbing/SharedMedia";
 import { SiteChrome } from "@/components/climbing/SiteChrome";
-import { isAdmin } from "@/lib/admin";
 import "@/assets/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -24,15 +23,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const admin = await isAdmin();
-
   return (
     <html lang="en" className="h-dvh">
       <body className="h-dvh overflow-hidden antialiased">
-        <div className="mx-auto flex h-full w-full max-w-[720px] flex-col">
-          <SiteChrome isAdmin={admin} />
+        <div className="relative flex h-full w-full flex-col">
+          <SiteChrome />
           <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-            <SharedMediaProvider>{children}</SharedMediaProvider>
+            <SharedMediaProvider>
+              <div className="flex min-h-0 w-full flex-1 flex-col">{children}</div>
+            </SharedMediaProvider>
           </main>
         </div>
       </body>

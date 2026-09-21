@@ -1,84 +1,74 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Wordmark } from "@/components/climbing/Wordmark";
-import packageJson from "../../../package.json";
-
-const STORAGE_KEY = "cyc_admin_chrome";
-const EVENT = "cyc-admin-chrome";
-
-function subscribe(onStoreChange: () => void) {
-  window.addEventListener(EVENT, onStoreChange);
-  return () => window.removeEventListener(EVENT, onStoreChange);
-}
-
-function getSnapshot() {
-  return sessionStorage.getItem(STORAGE_KEY) === "1";
-}
-
-function getServerSnapshot() {
-  return false;
-}
-
-const HOLD_CLASS =
-  "size-[18px] origin-center transition-transform duration-fast ease-micro group-hover:scale-110 group-active:scale-125 motion-reduce:transform-none motion-reduce:transition-none";
 
 function HoldMark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/hold-2.png" alt="" width={18} height={18} className={HOLD_CLASS} />
+    <img
+      src="/hold-2-illus.png"
+      alt=""
+      width={28}
+      height={28}
+      className="size-7 origin-center animate-breathe drop-shadow-md transition-transform duration-fast ease-micro group-hover:scale-125 group-hover:animate-none group-active:scale-90 motion-reduce:animate-none motion-reduce:transform-none motion-reduce:transition-none"
+    />
   );
 }
 
-type SiteChromeProps = {
-  isAdmin: boolean;
-};
+export function SiteChrome() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [pathWhenOpened, setPathWhenOpened] = useState(pathname);
+  if (pathname !== pathWhenOpened) {
+    setPathWhenOpened(pathname);
+    setOpen(false);
+  }
 
-export function SiteChrome({ isAdmin }: SiteChromeProps) {
-  const open = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  const toggle = useCallback(() => {
-    sessionStorage.setItem(STORAGE_KEY, open ? "0" : "1");
-    window.dispatchEvent(new Event(EVENT));
-  }, [open]);
+  const home = pathname === "/";
 
   return (
-    <header className="flex items-center justify-between px-4 py-4">
+    <header
+      className={`flex w-full items-start justify-between px-4 py-4 ${
+        home
+          ? "absolute inset-x-0 top-0 z-20"
+          : "relative mx-auto max-w-[720px]"
+      }`}
+    >
       <Link href="/" data-site-wordmark>
         <Wordmark />
       </Link>
 
-      {isAdmin ? (
-        <div className="flex items-center gap-6">
-          {open ? (
-            <>
-              <span className="text-caption tracking-caption text-mute">
-                v{packageJson.version}
-              </span>
-              <Link
-                href="/upload"
-                className="text-kicker uppercase tracking-kicker text-mute hover:text-ink"
-              >
-                Upload
-              </Link>
-            </>
-          ) : null}
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-label={open ? "Hide studio tools" : "Show studio tools"}
-            className="group cursor-pointer"
-            onClick={toggle}
-          >
-            <HoldMark />
-          </button>
-        </div>
-      ) : (
-        <Link href="/upload" aria-label="Upload" className="group">
+      <div className="flex flex-col items-end justify-center gap-2">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          className="group cursor-pointer p-2"
+          onClick={() => setOpen((current) => !current)}
+        >
           <HoldMark />
-        </Link>
-      )}
+        </button>
+
+        {open ? (
+          <>
+            <Link
+              href="/archive"
+              className="bg-white p-2 text-kicker uppercase tracking-kicker text-mute hover:text-ink"
+            >
+              Archive
+            </Link>
+            <Link
+              href="/upload"
+              className="bg-white p-2 text-kicker uppercase tracking-kicker text-mute hover:text-ink"
+            >
+              Upload
+            </Link>
+          </>
+        ) : null}
+      </div>
     </header>
   );
 }

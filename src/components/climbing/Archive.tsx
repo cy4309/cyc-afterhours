@@ -10,7 +10,12 @@ import { useSharedMedia } from "@/components/climbing/SharedMedia";
 import { VideoCard } from "@/components/climbing/VideoCard";
 import { motion, motionEase, motionMs } from "@/lib/motion";
 import { formatClimbMonth } from "@/lib/format";
-import { climbHref, type ClimbWithMedia, type GradeFilter as GradeFilterValue } from "@/lib/types/climbing";
+import {
+  archiveHref,
+  climbHref,
+  type ClimbWithMedia,
+  type GradeFilter as GradeFilterValue,
+} from "@/lib/types/climbing";
 
 type ArchiveProps = {
   climbs: ClimbWithMedia[];
@@ -116,7 +121,7 @@ export function Archive({ climbs, initialFilter }: ArchiveProps) {
     }
 
     setFilter(next);
-    void router.replace(next === "ALL" ? "/" : `/?grade=${next}`, { scroll: false });
+    void router.replace(archiveHref(next), { scroll: false });
   }
 
   useLayoutEffect(() => {
@@ -220,7 +225,7 @@ export function Archive({ climbs, initialFilter }: ArchiveProps) {
                           href: climbHref(climb.id, filter),
                           posterUrl: climb.posterUrl,
                           from: frame.getBoundingClientRect(),
-                          returnHref: filter === "ALL" ? "/" : `/?grade=${filter}`,
+                          returnHref: archiveHref(filter),
                         });
                       }}
                     >

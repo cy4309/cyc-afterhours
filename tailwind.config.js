@@ -32,6 +32,15 @@ module.exports = {
         layout: "cubic-bezier(0.19, 1, 0.22, 1)",
         scene: "cubic-bezier(0.83, 0, 0.17, 1)",
       },
+      keyframes: {
+        breathe: {
+          "0%, 100%": { transform: "scale(0.92)" },
+          "50%": { transform: "scale(1.1)" },
+        },
+      },
+      animation: {
+        breathe: "breathe 1.6s ease-in-out infinite",
+      },
     },
   },
   plugins: [

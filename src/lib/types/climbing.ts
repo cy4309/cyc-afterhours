@@ -65,6 +65,10 @@ export type ClimbNeighbor = {
   posterUrl?: string;
 };
 
+export function archiveHref(filter: GradeFilter = "ALL"): string {
+  return filter === "ALL" ? "/archive" : `/archive?grade=${filter}`;
+}
+
 export function climbHref(id: string, filter: GradeFilter = "ALL"): string {
   return filter === "ALL" ? `/climb/${id}` : `/climb/${id}?grade=${filter}`;
 }

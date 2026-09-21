@@ -66,7 +66,7 @@ const EMPTY: SharedMediaState = {
   id: null,
   from: null,
   to: null,
-  returnHref: "/",
+  returnHref: "/archive",
   hasTarget: false,
 };
 
@@ -246,7 +246,7 @@ export function SharedMediaProvider({ children }: { children: ReactNode }) {
 
   const closeToArchive = useCallback(
     (input: { id: string; posterUrl?: string; from: DOMRect }) => {
-      const returnHref = stateRef.current.returnHref || "/";
+      const returnHref = stateRef.current.returnHref || "/archive";
       if (prefersReducedMotion()) {
         router.push(returnHref);
         return;
@@ -306,7 +306,7 @@ export function SharedMediaProvider({ children }: { children: ReactNode }) {
         direction: input.direction,
         from: toRect(input.from),
         to: null,
-        returnHref: stateRef.current.returnHref || "/",
+        returnHref: stateRef.current.returnHref || "/archive",
         hasTarget: false,
       });
       router.push(input.href);
@@ -325,7 +325,7 @@ export function SharedMediaProvider({ children }: { children: ReactNode }) {
   const enterFromUpload = useCallback(
     (input: { id: string; posterUrl?: string; from: DOMRect }) => {
       if (prefersReducedMotion()) {
-        router.push("/");
+        router.push("/archive");
         router.refresh();
         return;
       }
@@ -338,10 +338,10 @@ export function SharedMediaProvider({ children }: { children: ReactNode }) {
         posterUrl: input.posterUrl,
         from: toRect(input.from),
         to: null,
-        returnHref: "/",
+        returnHref: "/archive",
         hasTarget: false,
       });
-      router.push("/");
+      router.push("/archive");
       router.refresh();
 
       window.setTimeout(() => {

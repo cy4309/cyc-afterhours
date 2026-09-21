@@ -1,25 +1,12 @@
-import { Archive } from "@/components/climbing/Archive";
-import { ArchiveIntro } from "@/components/climbing/ArchiveIntro";
-import { listClimbsWithMedia } from "@/lib/climbs-service";
-import { parseGradeFilter } from "@/lib/types/climbing";
+import { HomeHero } from "@/components/home/HomeHero";
+import { getClimbWithMedia } from "@/lib/climbs-service";
 
 export const dynamic = "force-dynamic";
 
-type HomeProps = {
-  searchParams: Promise<{ grade?: string }>;
-};
+const HOME_FILM_ID = "3f934d2f-d43d-459b-b35f-96dcb68dac16";
 
-export default async function Home({ searchParams }: HomeProps) {
-  const params = await searchParams;
-  const grade = parseGradeFilter(params.grade);
-  const climbs = await listClimbsWithMedia("ALL");
+export default async function Home() {
+  const climb = await getClimbWithMedia(HOME_FILM_ID);
 
-  return (
-    <section className="relative flex min-h-0 w-full flex-1 flex-col items-center md:justify-center">
-      <h1 className="sr-only">Climbing Archive</h1>
-      <ArchiveIntro>
-        <Archive climbs={climbs} initialFilter={grade} />
-      </ArchiveIntro>
-    </section>
-  );
+  return <HomeHero videoUrl={climb?.videoUrl} posterUrl={climb?.posterUrl} />;
 }

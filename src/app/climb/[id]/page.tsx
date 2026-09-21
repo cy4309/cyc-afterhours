@@ -21,12 +21,14 @@ export default async function ClimbPage({ params, searchParams }: ClimbPageProps
   }
 
   return (
-    <ClimbScene
-      climb={scene.climb}
-      previous={scene.previous}
-      next={scene.next}
-      filter={scene.filter}
-      isAdmin={admin}
-    />
+    <div className="mx-auto w-full max-w-[720px]">
+      <ClimbScene
+        climb={scene.climb}
+        previous={scene.previous}
+        next={scene.next}
+        filter={scene.filter}
+        isAdmin={admin}
+      />
+    </div>
   );
 }

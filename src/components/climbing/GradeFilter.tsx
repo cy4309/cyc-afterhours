@@ -1,6 +1,6 @@
 "use client";
 
-import { FILTER_GRADES, type GradeFilter } from "@/lib/types/climbing";
+import { archiveHref, FILTER_GRADES, type GradeFilter } from "@/lib/types/climbing";
 
 type GradeFilterProps = {
   active: GradeFilter;
@@ -35,7 +35,7 @@ export function GradeFilter({ active, onSelect }: GradeFilterProps) {
           );
         }
 
-        const href = grade === "ALL" ? "/" : `/?grade=${grade}`;
+        const href = archiveHref(grade);
         return (
           <a key={grade} href={href} className={className}>
             {grade}

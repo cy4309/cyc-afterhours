@@ -202,7 +202,7 @@ export function ClimbScene({
               setDeleting(true);
               try {
                 await deleteClimb(climb.id);
-                router.push("/");
+                router.push("/archive");
                 router.refresh();
               } catch {
                 setDeleting(false);
