@@ -17,7 +17,9 @@ export function Wordmark({ className }: WordmarkProps) {
         height={14}
         className="size-3.5 shrink-0"
       />
-      <span className="text-kicker uppercase tracking-mark">afterhours</span>
+      <span className="text-kicker uppercase tracking-mark font-semibold">
+        afterhours
+      </span>
     </span>
   );
 }

@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import gsap from "gsap";
 import { Wordmark } from "@/components/climbing/Wordmark";
+import { motion, motionEase } from "@/lib/motion";
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 function HoldMark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/hold-2-illus.png"
+      src="/hold-2-illus-blue.png"
       alt=""
       width={28}
       height={28}
@@ -20,24 +26,76 @@ function HoldMark() {
 
 export function SiteChrome() {
   const pathname = usePathname();
+  const chromeRef = useRef<HTMLAnchorElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const flyingRef = useRef<HTMLDivElement>(null);
+  const [intro, setIntro] = useState(true);
   const [open, setOpen] = useState(false);
   const [pathWhenOpened, setPathWhenOpened] = useState(pathname);
   if (pathname !== pathWhenOpened) {
     setPathWhenOpened(pathname);
     setOpen(false);
+    setIntro(true);
   }
 
-  const home = pathname === "/";
+  useLayoutEffect(() => {
+    if (!intro || prefersReducedMotion()) return;
+
+    const overlay = overlayRef.current;
+    const flying = flyingRef.current;
+    const chrome = chromeRef.current;
+    if (!overlay || !flying || !chrome) return;
+
+    gsap.set(overlay, { yPercent: 0 });
+    gsap.set(flying, { x: 0, y: 0, opacity: 1 });
+
+    const from = flying.getBoundingClientRect();
+    const to = chrome.getBoundingClientRect();
+
+    const timeline = gsap.timeline({
+      onComplete: () => setIntro(false),
+    });
+    timeline
+      .fromTo(
+        flying,
+        { y: 10, opacity: 0.35 },
+        { y: 0, opacity: 1, duration: motion.fast, ease: motionEase.micro },
+      )
+      .to(
+        overlay,
+        { yPercent: -100, duration: 0.75, ease: motionEase.scene },
+        0.35,
+      )
+      .to(
+        flying,
+        {
+          x: to.left - from.left,
+          y: to.top - from.top,
+          duration: 0.75,
+          ease: motionEase.scene,
+        },
+        0.35,
+      );
+
+    const skip = (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      timeline.progress(1);
+    };
+    overlay.addEventListener("pointerdown", skip);
+    return () => {
+      timeline.kill();
+      overlay.removeEventListener("pointerdown", skip);
+    };
+  }, [intro, pathname]);
 
   return (
-    <header
-      className={`flex w-full items-start justify-between px-4 py-4 ${
-        home
-          ? "absolute inset-x-0 top-0 z-20"
-          : "relative mx-auto max-w-[720px]"
-      }`}
-    >
-      <Link href="/" data-site-wordmark>
+    <header className="absolute inset-x-0 top-0 z-20 flex w-full items-start justify-between px-4 py-4">
+      <Link
+        ref={chromeRef}
+        href="/"
+        className={intro ? "invisible motion-reduce:visible" : undefined}
+      >
         <Wordmark />
       </Link>
 
@@ -69,6 +127,20 @@ export function SiteChrome() {
           </>
         ) : null}
       </div>
+
+      {intro ? (
+        <>
+          <div
+            ref={overlayRef}
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md motion-reduce:hidden"
+          />
+          <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center motion-reduce:hidden">
+            <div ref={flyingRef} className="inline-flex">
+              <Wordmark />
+            </div>
+          </div>
+        </>
+      ) : null}
     </header>
   );
 }

@@ -10,6 +10,7 @@ module.exports = {
         paper: "#ffffff",
         ink: "#111111",
         mute: "#8a8a8a",
+        blue: "#1e8bc5",
       },
       fontSize: {
         kicker: ["11px", { lineHeight: "1rem" }],

@@ -9,7 +9,7 @@ export default async function UploadPage() {
   const admin = await isAdmin();
 
   return (
-    <section className="mx-auto w-full max-w-[720px] px-4 pb-16">
+    <section className="mx-auto w-full max-w-[720px] px-4 pb-16 pt-16">
       <div className="mb-16 flex items-baseline justify-between">
         <h1 className="text-kicker uppercase tracking-mark">Upload</h1>
         <div className="flex items-baseline gap-6">
