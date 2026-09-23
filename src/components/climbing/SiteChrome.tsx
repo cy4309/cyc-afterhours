@@ -11,6 +11,10 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function isArchiveInner(path: string) {
+  return path.startsWith("/climb");
+}
+
 function HoldMark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -29,17 +33,17 @@ export function SiteChrome() {
   const chromeRef = useRef<HTMLAnchorElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const flyingRef = useRef<HTMLDivElement>(null);
-  const [intro, setIntro] = useState(true);
+  const [intro, setIntro] = useState(() => !isArchiveInner(pathname));
   const [open, setOpen] = useState(false);
   const [pathWhenOpened, setPathWhenOpened] = useState(pathname);
   if (pathname !== pathWhenOpened) {
     setPathWhenOpened(pathname);
     setOpen(false);
-    setIntro(true);
+    if (!isArchiveInner(pathname)) setIntro(true);
   }
 
   useLayoutEffect(() => {
-    if (!intro || prefersReducedMotion()) return;
+    if (!intro || isArchiveInner(pathname) || prefersReducedMotion()) return;
 
     const overlay = overlayRef.current;
     const flying = flyingRef.current;

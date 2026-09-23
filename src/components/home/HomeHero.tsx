@@ -35,7 +35,7 @@ export function HomeHero({ videoUrl, posterUrl }: HomeHeroProps) {
         <picture className="block h-full w-full">
           <source media="(min-width: 768px)" srcSet="/climbing-3-2.jpg" />
           <img
-            src="/climbing-2-1.jpg"
+            src="/climbing-2-1.png"
             alt=""
             className="h-full w-full object-cover"
           />
