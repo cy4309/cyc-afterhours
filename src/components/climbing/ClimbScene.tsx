@@ -101,7 +101,7 @@ export function ClimbScene({
 
   return (
     <section
-      className={`space-y-6 px-4 pt-20 pb-safe-20 ${
+      className={`space-y-6 px-4 pt-12 pb-safe-20 ${
         transitioning ? "pointer-events-none opacity-0" : ""
       }`}
       onTouchStart={(event) => {

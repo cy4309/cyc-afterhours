@@ -108,7 +108,7 @@ export function SiteChrome() {
           type="button"
           aria-expanded={open}
           aria-label={open ? "Close navigation" : "Open navigation"}
-          className="group cursor-pointer p-2"
+          className="group cursor-pointer"
           onClick={() => setOpen((current) => !current)}
         >
           <HoldMark />

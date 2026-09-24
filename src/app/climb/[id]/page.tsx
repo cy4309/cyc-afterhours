@@ -21,7 +21,7 @@ export default async function ClimbPage({ params, searchParams }: ClimbPageProps
   }
 
   return (
-    <div className="mx-auto w-full max-w-[720px] pt-16">
+    <div className="mx-auto w-full max-w-[720px] pt-24">
       <ClimbScene
         climb={scene.climb}
         previous={scene.previous}
