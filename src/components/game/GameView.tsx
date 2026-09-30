@@ -74,9 +74,9 @@ export function GameView() {
           canvas,
           {
             arguments: [],
-            dataUrl: `${BUILD}/BoulderingWeb.data`,
-            frameworkUrl: `${BUILD}/BoulderingWeb.framework.js`,
-            codeUrl: `${BUILD}/BoulderingWeb.wasm`,
+            dataUrl: `${BUILD}/BoulderingWeb.data.unityweb`,
+            frameworkUrl: `${BUILD}/BoulderingWeb.framework.js.unityweb`,
+            codeUrl: `${BUILD}/BoulderingWeb.wasm.unityweb`,
             streamingAssetsUrl: `${BASE}/StreamingAssets`,
             fullscreenElementID: "unity-fullscreen-container",
             companyName: "DefaultCompany",

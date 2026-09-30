@@ -1,0 +1,11 @@
+/bouldering/BoulderingWeb/Build/BoulderingWeb.wasm.unityweb
+  Content-Type: application/wasm
+  Content-Encoding: gzip
+
+/bouldering/BoulderingWeb/Build/BoulderingWeb.data.unityweb
+  Content-Type: application/octet-stream
+  Content-Encoding: gzip
+
+/bouldering/BoulderingWeb/Build/BoulderingWeb.framework.js.unityweb
+  Content-Type: application/javascript; charset=utf-8
+  Content-Encoding: gzip
