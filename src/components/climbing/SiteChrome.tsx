@@ -128,6 +128,12 @@ export function SiteChrome() {
             >
               Upload
             </Link>
+            <Link
+              href="/game"
+              className="bg-white p-2 text-kicker uppercase tracking-kicker text-mute hover:text-ink"
+            >
+              Game
+            </Link>
           </>
         ) : null}
       </div>
