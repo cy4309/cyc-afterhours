@@ -3,6 +3,7 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei", "three-bvh-csg"],
   async headers() {
     const gzip = { key: "Content-Encoding", value: "gzip" };
     return [

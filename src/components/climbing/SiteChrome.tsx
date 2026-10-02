@@ -134,6 +134,12 @@ export function SiteChrome() {
             >
               Game
             </Link>
+            <Link
+              href="/test"
+              className="bg-white p-2 text-kicker uppercase tracking-kicker text-mute hover:text-ink"
+            >
+              Test
+            </Link>
           </>
         ) : null}
       </div>
