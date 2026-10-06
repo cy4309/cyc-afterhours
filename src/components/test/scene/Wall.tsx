@@ -18,7 +18,8 @@ export function Wall() {
   return (
     <mesh position={[0, 0, 0]} receiveShadow>
       <planeGeometry args={[14, 14]} />
-      <meshStandardMaterial map={texture} roughness={0.9} metalness={0} />
+      {/* <meshStandardMaterial map={texture} roughness={0.9} metalness={0} /> */}
+      <meshStandardMaterial color="black" />
     </mesh>
   );
 }
