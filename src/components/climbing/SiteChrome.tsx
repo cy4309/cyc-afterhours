@@ -15,6 +15,14 @@ function isArchiveInner(path: string) {
   return path.startsWith("/climb");
 }
 
+function isGame(path: string) {
+  return path === "/game" || path.startsWith("/game/");
+}
+
+function skipIntro(path: string) {
+  return isArchiveInner(path) || isGame(path);
+}
+
 function HoldMark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -33,17 +41,17 @@ export function SiteChrome() {
   const chromeRef = useRef<HTMLAnchorElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const flyingRef = useRef<HTMLDivElement>(null);
-  const [intro, setIntro] = useState(() => !isArchiveInner(pathname));
+  const [intro, setIntro] = useState(() => !skipIntro(pathname));
   const [open, setOpen] = useState(false);
   const [pathWhenOpened, setPathWhenOpened] = useState(pathname);
   if (pathname !== pathWhenOpened) {
     setPathWhenOpened(pathname);
     setOpen(false);
-    if (!isArchiveInner(pathname)) setIntro(true);
+    if (!skipIntro(pathname)) setIntro(true);
   }
 
   useLayoutEffect(() => {
-    if (!intro || isArchiveInner(pathname) || prefersReducedMotion()) return;
+    if (!intro || skipIntro(pathname) || prefersReducedMotion()) return;
 
     const overlay = overlayRef.current;
     const flying = flyingRef.current;
@@ -92,6 +100,8 @@ export function SiteChrome() {
       overlay.removeEventListener("pointerdown", skip);
     };
   }, [intro, pathname]);
+
+  if (isGame(pathname)) return null;
 
   return (
     <header className="absolute inset-x-0 top-0 z-20 flex w-full items-start justify-between px-4 py-4">
