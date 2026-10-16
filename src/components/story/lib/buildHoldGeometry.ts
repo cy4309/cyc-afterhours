@@ -22,6 +22,13 @@ function collapseDrawRange(geometry: THREE.BufferGeometry) {
   return trimmed;
 }
 
+let sharedHoldGeometry: THREE.BufferGeometry | null = null;
+
+export function getSharedHoldGeometry() {
+  if (!sharedHoldGeometry) sharedHoldGeometry = buildHoldGeometry();
+  return sharedHoldGeometry;
+}
+
 export function buildHoldGeometry() {
   const base = new THREE.IcosahedronGeometry(0.62, 5);
   const pos = base.attributes.position;
@@ -69,7 +76,7 @@ export function buildHoldGeometry() {
     const pit = fbm(v.x * 22, v.y * 22, v.z * 18);
     const r = Math.hypot(v.x, v.y);
     const holeShade = r < HOLE_RADIUS + 0.05 ? 0.14 : 0;
-    const shade = 0.46 + grain * 0.48 - pit * 0.2 - holeShade;
+    const shade = 0.34 + grain * 0.55 - pit * 0.28 - holeShade;
     colors[i * 3] = shade;
     colors[i * 3 + 1] = shade;
     colors[i * 3 + 2] = shade;

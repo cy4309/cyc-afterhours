@@ -1,11 +1,15 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { Wordmark } from "@/components/climbing/Wordmark";
 import { motion, motionEase } from "@/lib/motion";
+import {
+  getStoryHeaderHidden,
+  subscribeStoryHeader,
+} from "@/components/story/storyChrome";
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -33,17 +37,26 @@ export function SiteChrome() {
   const chromeRef = useRef<HTMLAnchorElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const flyingRef = useRef<HTMLDivElement>(null);
-  const [intro, setIntro] = useState(() => !isArchiveInner(pathname));
+  const [intro, setIntro] = useState(
+    () => !isArchiveInner(pathname) && pathname !== "/story",
+  );
   const [open, setOpen] = useState(false);
   const [pathWhenOpened, setPathWhenOpened] = useState(pathname);
   if (pathname !== pathWhenOpened) {
     setPathWhenOpened(pathname);
     setOpen(false);
-    if (!isArchiveInner(pathname)) setIntro(true);
+    if (!isArchiveInner(pathname) && pathname !== "/story") setIntro(true);
   }
 
+  const isStory = pathname === "/story";
+  const storyHeaderHidden = useSyncExternalStore(
+    subscribeStoryHeader,
+    getStoryHeaderHidden,
+    () => false,
+  );
+
   useLayoutEffect(() => {
-    if (!intro || isArchiveInner(pathname) || prefersReducedMotion()) return;
+    if (isStory || !intro || isArchiveInner(pathname) || prefersReducedMotion()) return;
 
     const overlay = overlayRef.current;
     const flying = flyingRef.current;
@@ -91,10 +104,16 @@ export function SiteChrome() {
       timeline.kill();
       overlay.removeEventListener("pointerdown", skip);
     };
-  }, [intro, pathname]);
+  }, [intro, isStory, pathname]);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-20 flex w-full items-start justify-between px-4 py-4">
+    <header
+      aria-hidden={isStory && storyHeaderHidden}
+      className={[
+        "absolute inset-x-0 top-0 z-20 flex w-full items-start justify-between px-4 py-4 transition-opacity duration-slow ease-layout",
+        isStory && storyHeaderHidden ? "pointer-events-none opacity-0" : "opacity-100",
+      ].join(" ")}
+    >
       <Link
         ref={chromeRef}
         href="/"
